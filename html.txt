@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prajhin Sai Aquatics - Premium Fish Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --ocean-deep: #0a2463; --ocean-mid: #1e5f8c; --ocean-light: #3e92cc;
+            --foam: #ffffff; --sand: #fffacd; --coral: #ff6b6b;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(180deg, var(--ocean-deep) 0%, var(--ocean-mid) 50%, var(--ocean-light) 100%);
+            min-height: 100vh; color: var(--foam); overflow-x: hidden; position: relative;
+        }
+        .bubble {
+            position: fixed; bottom: -100px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; animation: rise 15s infinite ease-in; z-index: 1;
+        }
+        @keyframes rise { to { bottom: 110%; transform: translateX(100px); } }
+        header {
+            background: rgba(10, 36, 99, 0.9); backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .header-content {
+            max-width: 1400px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .logo-section { display: flex; align-items: center; gap: 1rem; }
+        .logo {
+            width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--ocean-light); box-shadow: 0 0 20px rgba(62, 146, 204, 0.5);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif; font-size: 2.5rem;
+            color: var(--foam); text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .tagline { font-size: 0.9rem; color: var(--ocean-light); font-weight: 300; }
+        .header-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+        .social-links { display: flex; gap: 1rem; align-items: center; }
+        .social-btn {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 25px;
+            color: var(--foam); text-decoration: none; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.2); transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .cart-btn {
+            position: relative; background: var(--coral); border: none; 
+            padding: 0.7rem 1.5rem; border-radius: 25px; color: white; 
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .cart-btn:hover {
+            background: #ff5252; transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        .cart-badge {
+            position: absolute; top: -8px; right: -8px; background: white;
+            color: var(--coral); border-radius: 50%; width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: bold; border: 2px solid var(--coral);
+        }
+        .admin-btn {
+            background: var(--ocean-light); border: none; padding: 0.7rem 1.5rem;
+            border-radius: 25px; color: white; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .admin-btn:hover {
+            background: var(--ocean-mid); transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 95, 140, 0.4);
+        }
+        .container { max-width: 1400px; margin: 3rem auto; padding: 0 2rem 5rem; position: relative; z-index: 10; }
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem; margin-top: 2rem;
+        }
+        .product-card {
+            background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; color: var(--ocean-deep);
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); }
+        .product-image-container { width: 100%; height: 250px; overflow: hidden; }
+        .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        .product-card:hover .product-image { transform: scale(1.1); }
+        .product-info { padding: 1.5rem; }
+        .product-name { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ocean-deep); }
+        .product-description { font-size: 0.95rem; color: #555; margin-bottom: 1rem; line-height: 1.5; }
+        .product-price { font-size: 1.8rem; font-weight: 700; color: var(--coral); margin-bottom: 1rem; }
+        .currency { font-size: 1.3rem; }
+        .add-to-cart-btn {
+            width: 100%; padding: 0.8rem; background: var(--ocean-light);
+            color: white; border: none; border-radius: 10px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; font-size: 1rem;
+        }
+        .add-to-cart-btn:hover {
+            background: var(--ocean-mid); transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 95, 140, 0.3);
+        }
+        .cart-modal, .admin-panel, .password-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: 2000; overflow-y: auto;
+        }
+        .modal-content, .cart-content, .admin-content, .password-content {
+            max-width: 800px; margin: 2rem auto; background: white;
+            border-radius: 20px; padding: 2rem; color: var(--ocean-deep);
+        }
+        .password-content { max-width: 400px; width: 90%; }
+        .modal-header, .cart-header, .admin-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; border-bottom: 2px solid var(--ocean-light); padding-bottom: 1rem;
+        }
+        .close-btn {
+            background: var(--coral); border: none; padding: 0.5rem 1rem;
+            border-radius: 10px; color: white; cursor: pointer; font-weight: 600;
+        }
+        .cart-items { margin-bottom: 2rem; max-height: 400px; overflow-y: auto; }
+        .cart-item {
+            display: flex; gap: 1rem; padding: 1rem; background: #f5f5f5;
+            border-radius: 10px; margin-bottom: 1rem; align-items: center;
+        }
+        .cart-item-image {
+            width: 80px; height: 80px; object-fit: cover; border-radius: 10px;
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .cart-item-price { color: var(--coral); font-weight: 600; }
+        .cart-item-controls {
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        }
+        .quantity-controls {
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .quantity-btn {
+            background: var(--ocean-light); color: white; border: none;
+            width: 30px; height: 30px; border-radius: 5px; cursor: pointer;
+            font-weight: bold; transition: all 0.3s ease; font-size: 1.2rem;
+        }
+        .quantity-btn:hover { background: var(--ocean-mid); }
+        .quantity { font-weight: 600; min-width: 30px; text-align: center; }
+        .remove-btn {
+            background: var(--coral); color: white; border: none;
+            padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s ease;
+        }
+        .remove-btn:hover { background: #ff5252; }
+        .cart-summary {
+            background: #f9f9f9; padding: 1.5rem; border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .cart-total {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 1.5rem; font-weight: 700; color: var(--ocean-deep);
+            margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #ddd;
+        }
+        .empty-cart {
+            text-align: center; padding: 3rem; color: #999;
+        }
+        .empty-cart-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .payment-options {
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .payment-btn {
+            padding: 1rem; border: 2px solid var(--ocean-light); border-radius: 10px;
+            background: white; cursor: pointer; transition: all 0.3s ease;
+            text-align: left; font-size: 1rem;
+        }
+        .payment-btn:hover {
+            background: var(--ocean-light); color: white; transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 95, 140, 0.3);
+        }
+        .payment-btn-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .payment-btn-desc { font-size: 0.9rem; color: #666; }
+        .payment-btn:hover .payment-btn-desc { color: white; }
+        .contact-number {
+            font-weight: 700; color: var(--coral); font-size: 1.1rem;
+        }
+        .payment-btn:hover .contact-number { color: white; }
+        .admin-panel { z-index: 1000; }
+        .admin-form { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; margin-bottom: 0.5rem; color: var(--ocean-deep); }
+        .form-group input, .form-group textarea {
+            padding: 0.8rem; border: 2px solid var(--ocean-light); border-radius: 10px;
+            font-family: 'Outfit', sans-serif; font-size: 1rem;
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn {
+            padding: 0.8rem 1.5rem; border: none; border-radius: 10px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-primary { background: var(--ocean-light); color: white; }
+        .btn-primary:hover { background: var(--ocean-mid); }
+        .btn-secondary { background: #ccc; color: #333; }
+        .btn-secondary:hover { background: #999; }
+        .product-list { display: flex; flex-direction: column; gap: 1rem; }
+        .product-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem; background: #f5f5f5; border-radius: 10px; flex-wrap: wrap; gap: 1rem;
+        }
+        .product-item-info { flex: 1; min-width: 200px; }
+        .product-item-actions { display: flex; gap: 0.5rem; }
+        .btn-edit { background: var(--ocean-light); color: white; }
+        .btn-delete { background: var(--coral); color: white; }
+        .password-modal {
+            z-index: 2500;
+            justify-content: center; align-items: center;
+        }
+        .password-content h2 { color: var(--ocean-deep); margin-bottom: 1rem; }
+        .password-content input {
+            width: 100%; padding: 0.8rem; border: 2px solid var(--ocean-light);
+            border-radius: 10px; margin-bottom: 1rem; font-size: 1rem;
+        }
+        .waves { position: fixed; bottom: 0; left: 0; width: 100%; height: 150px; z-index: 5; pointer-events: none; }
+        @keyframes wave { 0% { transform: translateX(0); } 50% { transform: translateX(-25%); } 100% { transform: translateX(0); } }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .logo { width: 60px; height: 60px; }
+            .header-content { justify-content: center; text-align: center; }
+            .header-actions, .social-links { flex-wrap: wrap; justify-content: center; }
+            .product-grid { grid-template-columns: 1fr; }
+            .cart-item { flex-direction: column; text-align: center; }
+            .cart-item-controls { flex-direction: column; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble" style="left: 10%; width: 40px; height: 40px; animation-delay: 0s;"></div>
+    <div class="bubble" style="left: 20%; width: 20px; height: 20px; animation-delay: 2s;"></div>
+    <div class="bubble" style="left: 35%; width: 50px; height: 50px; animation-delay: 4s;"></div>
+    <div class="bubble" style="left: 50%; width: 30px; height: 30px; animation-delay: 1s;"></div>
+    <div class="bubble" style="left: 70%; width: 35px; height: 35px; animation-delay: 3s;"></div>
+    <div class="bubble" style="left: 80%; width: 25px; height: 25px; animation-delay: 5s;"></div>
+    <div class="bubble" style="left: 90%; width: 45px; height: 45px; animation-delay: 2.5s;"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="data:image/jpeg;base64,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" alt="Prajhin Sai Aquatics Logo" class="logo">
+                <div>
+                    <h1>Prajhin Sai Aquatics</h1>
+                    <p class="tagline">Premium Quality Fish Market</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="social-links">
+                    <a href="https://instagram.com/prajhin_sai_betas" target="_blank" class="social-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        Instagram
+                    </a>
+                    <a href="https://youtube.com/@prajhinsaibetas" target="_blank" class="social-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        YouTube
+                    </a>
+                </div>
+                <button class="cart-btn" onclick="openCart()">
+                    🛒 Cart
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="admin-btn" onclick="openPasswordModal()">Admin Panel</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>🛒 Your Shopping Cart</h2>
+                <button class="close-btn" onclick="closeCart()">Close</button>
+            </div>
+            <div id="cartItemsContainer"></div>
+            <div id="paymentSection" style="display: none;">
+                <h3 style="margin-bottom: 1rem;">Choose Payment Method</h3>
+                <div class="payment-options">
+                    <button class="payment-btn" onclick="selectPayment('cod')">
+                        <div class="payment-btn-title">💵 Cash on Delivery</div>
+                        <div class="payment-btn-desc">Pay when you receive your order at your doorstep.</div>
+                    </button>
+                    <button class="payment-btn" onclick="selectPayment('online')">
+                        <div class="payment-btn-title">💳 Online Payment</div>
+                        <div class="payment-btn-desc">For online payment, please contact: <span class="contact-number">+91 81243 39528</span></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-content">
+            <h2>Admin Access</h2>
+            <input type="password" id="passwordInput" placeholder="Enter admin password">
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="checkPassword()">Login</button>
+                <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>Admin Panel - Manage Products</h2>
+                <button class="close-btn" onclick="closeAdmin()">Close</button>
+            </div>
+            <form class="admin-form" id="productForm" onsubmit="saveProduct(event)">
+                <div class="form-group">
+                    <label>Fish Name</label>
+                    <input type="text" id="fishName" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" id="fishPrice" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="fishDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="fishImage" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Fish</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+            </form>
+            <h3 style="margin: 2rem 0 1rem;">Current Products</h3>
+            <div class="product-list" id="productList"></div>
+        </div>
+    </div>
+
+    <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
+        <defs>
+            <path id="wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+            <use href="#wave" x="48" y="0" fill="rgba(255,255,255,0.7)" style="animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;" />
+            <use href="#wave" x="48" y="3" fill="rgba(255,255,255,0.5)" style="animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite;" />
+            <use href="#wave" x="48" y="5" fill="rgba(255,255,255,0.3)" style="animation: wave 9s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;" />
+        </g>
+    </svg>
+
+    <script>
+        const ADMIN_PASSWORD = "prahinadmin123";
+        let editingId = null;
+        let cart = JSON.parse(localStorage.getItem('fishCart')) || [];
+
+        const initialProducts = [
+            {
+                id: 1, name: "Atlantic Salmon", price: 2099,
+                description: "Fresh Atlantic salmon, rich in omega-3 fatty acids. Perfect for grilling or baking.",
+                image: "https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=500"
+            },
+            {
+                id: 2, name: "Bluefin Tuna", price: 3899,
+                description: "Premium bluefin tuna, ideal for sushi and sashimi. Sustainable catch.",
+                image: "https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=500"
+            },
+            {
+                id: 3, name: "King Prawns", price: 2799,
+                description: "Jumbo king prawns, succulent and sweet. Great for curries and grills.",
+                image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500"
+            },
+            {
+                id: 4, name: "Sea Bass", price: 2399,
+                description: "Fresh sea bass with delicate flavor. Perfect for Indian and continental dishes.",
+                image: "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=500"
+            },
+            {
+                id: 5, name: "Fresh Lobster", price: 4999,
+                description: "Live lobster, the ultimate luxury seafood. Perfect for special occasions.",
+                image: "https://images.unsplash.com/photo-1625937286074-9ca519d5d9df?w=500"
+            },
+            {
+                id: 6, name: "Rainbow Trout", price: 1599,
+                description: "Farm-raised rainbow trout, tender and flavorful. Excellent source of protein.",
+                image: "https://images.unsplash.com/photo-1534043464124-3be32fe000c9?w=500"
+            }
+        ];
+
+        if (!localStorage.getItem('fishProducts')) {
+            localStorage.setItem('fishProducts', JSON.stringify(initialProducts));
+        }
+
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price"><span class="currency">₹</span>${product.price.toFixed(2)}</div>
+                        <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartBadge').textContent = totalItems;
+        }
+
+        function addToCart(productId) {
+            const products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+            const product = products.find(p => p.id === productId);
+            
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            localStorage.setItem('fishCart', JSON.stringify(cart));
+            updateCartBadge();
+            alert(`${product.name} added to cart!`);
+        }
+
+        function openCart() {
+            document.getElementById('cartModal').style.display = 'block';
+            renderCart();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const paymentSection = document.getElementById('paymentSection');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h3>Your cart is empty</h3>
+                        <p>Add some delicious fish to get started!</p>
+                    </div>
+                `;
+                paymentSection.style.display = 'none';
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            container.innerHTML = `
+                <div class="cart-items">
+                    ${cart.map((item, index) => `
+                        <div class="cart-item">
+                            <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">₹${item.price.toFixed(2)} each</div>
+                            </div>
+                            <div class="cart-item-controls">
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span class="quantity">${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="cart-summary">
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span>₹${total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            paymentSection.style.display = 'block';
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('fishCart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            if (confirm('Remove this item from cart?')) {
+                cart.splice(index, 1);
+                localStorage.setItem('fishCart', JSON.stringify(cart));
+                updateCartBadge();
+                renderCart();
+            }
+        }
+
+        function selectPayment(method) {
+            if (method === 'cod') {
+                alert('Thank you for your order! We will deliver your fish with Cash on Delivery option. Our team will contact you soon!');
+                cart = [];
+                localStorage.setItem('fishCart', JSON.stringify(cart));
+                updateCartBadge();
+                closeCart();
+            } else if (method === 'online') {
+                alert('For online payment, please contact us at +91 81243 39528. Save your cart and call us to complete the payment!');
+            }
+        }
+
+        // Admin functions
+        function openPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                closePasswordModal();
+                openAdmin();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        function openAdmin() {
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminProducts();
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+            clearForm();
+        }
+
+        function loadAdminProducts() {
+            const products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+            const list = document.getElementById('productList');
+            list.innerHTML = products.map(product => `
+                <div class="product-item">
+                    <div class="product-item-info">
+                        <strong>${product.name}</strong> - ₹${product.price.toFixed(2)}
+                        <br><small>${product.description.substring(0, 50)}...</small>
+                    </div>
+                    <div class="product-item-actions">
+                        <button class="btn btn-edit" onclick="editProduct(${product.id})">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteProduct(${product.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            const products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+            const product = {
+                id: editingId || Date.now(),
+                name: document.getElementById('fishName').value,
+                price: parseFloat(document.getElementById('fishPrice').value),
+                description: document.getElementById('fishDescription').value,
+                image: document.getElementById('fishImage').value
+            };
+
+            if (editingId) {
+                const index = products.findIndex(p => p.id === editingId);
+                products[index] = product;
+                editingId = null;
+            } else {
+                products.push(product);
+            }
+
+            localStorage.setItem('fishProducts', JSON.stringify(products));
+            loadProducts();
+            loadAdminProducts();
+            clearForm();
+            alert('Product saved successfully!');
+        }
+
+        function editProduct(id) {
+            const products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+            const product = products.find(p => p.id === id);
+            if (product) {
+                editingId = id;
+                document.getElementById('fishName').value = product.name;
+                document.getElementById('fishPrice').value = product.price;
+                document.getElementById('fishDescription').value = product.description;
+                document.getElementById('fishImage').value = product.image;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                let products = JSON.parse(localStorage.getItem('fishProducts')) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('fishProducts', JSON.stringify(products));
+                loadProducts();
+                loadAdminProducts();
+            }
+        }
+
+        function clearForm() {
+            editingId = null;
+            document.getElementById('productForm').reset();
+        }
+
+        // Initialize
+        loadProducts();
+        updateCartBadge();
+    </script>
+</body>
+</html>
